@@ -1,10 +1,10 @@
 class Board
   @@board_count = 0
-  @@POSSIBLE_WINS = [["0", "1", "2"], ["0", "1", "2"], ["0", "1", "2"], ["0", "1", "2"], ["0", "1", "2"],
-                     ["0", "1", "2"], ["0", "1", "2"], ["0", "1", "2"], ["0", "1", "2"]]
+  @@POSSIBLE_WINS = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7],
+                     [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 
   def initialize
-    @game_finished = false
+    @winner = "in progress"
     @player = "x"
     @squares = []
     9.times do
@@ -13,6 +13,9 @@ class Board
     @@board_count += 1
   end
 
+  private
+
+  #Changes active player
   def switch_player
     if @player == "x"
       @player = "o"
@@ -21,6 +24,7 @@ class Board
     end
   end
 
+  #displays the current state of the board
   def print_board
     count = 0
     3.times do
@@ -32,6 +36,7 @@ class Board
     end
   end
 
+  #gets input from user, makes sure it is in the correct range and that the box is not already filled
   def get_input
     input_found = false
     until input_found
@@ -46,6 +51,7 @@ class Board
     return input
   end
 
+  #One player's turn: get input and add it to the board
   def turn
     print_board
     puts "#{@player}'s turn"
@@ -54,8 +60,17 @@ class Board
     switch_player
   end
 
+  #checks if a player has won yet
   def check_for_winner
-    return @squares[8] != "_"
+    @@POSSIBLE_WINS.each do |row|
+      if @squares[row[0]] == @squares[row[1]] and @squares[row[1]] == @squares[row[2]] and @squares[row[0]] != "_"
+        return "#{@squares[row[0]]} wins!"
+      end
+    end
+    unless @squares.include? "_"
+      return "tie"
+    end
+    return "in progress"
 
     @@POSSIBLE_WINS.each do |row|
       p row
@@ -65,11 +80,13 @@ class Board
   public
 
   def play
-    until @game_finished
+    while @winner == "in progress"
       turn
-      @game_finished = check_for_winner
+      @winner = check_for_winner
+      puts @winner
     end
     print_board
+    puts @winner
   end
 end
 
