@@ -29,7 +29,11 @@ class Mastermind
       finished = check_guess(input)
       guess_count += 1
     end
-    puts "done"
+    if finished
+      puts "You win"
+    else
+      puts "You lose"
+    end
   end
 end
 
